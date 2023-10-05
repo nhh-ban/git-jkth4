@@ -31,46 +31,6 @@ You can solve this problem in one of three ways depending on the level of your c
 
 You can, of course, move up and down this ladder of difficulty as you see fit yourself.
 
-##solution:
-# read packages 
-library(tidyverse)
-
-# load data 
-raw_file = readLines(con = "suites_dw_Table1.txt")
-
-# identify the separator line (line 14) and give it the name L
-L <-
-  (substr(x = raw_file, start = 1, stop = 2) == "--") %>%
-  which() %>% 
-  min()
-
-# extract the variable description from the text file and store it in another
-# text file
-cat(raw_file[1:(L-2)], sep = "\n", file = "variable_description.txt")
-
-# extract the variable names and store them in a new vaiable, called "variable_names"
-variable_names <- 
-  str_split(string = raw_file[L-1], pattern = "\\|") %>% 
-  unlist() %>% 
-  str_trim()
-
-#read the data (without the variable description) and convert it to csv
-comma_separated_values <- 
-  raw_file[(L+1):810] %>% 
-  gsub("\\|", ",", .) %>% 
-  gsub(" ", "", .)
-
-# add the variable names to the data and convert everything to a csv file
-comma_separated_values_with_names <- 
-  c(paste(variable_names, collapse = ","),
-    comma_separated_values)
-
-# create a new txt file that contains the csv values created above
-cat(comma_separated_values_with_names, sep = "\n", file = "csv_data.txt")
-
-#read the txt file back in 
-galaxies <- read_csv("csv_data.txt")
-
 ## Problem 3
 
 The authors of the papers referenced above claim that their galaxy catalog is approximately complete because it is a *representative* sample of a particular volume in space (the ball of radius 11 megaparsecs centered on you and me). There are, however, some signs that the smaller objects are under-represented in the sample. Can you make a plot that reveals this tendency and a likely explanation?
